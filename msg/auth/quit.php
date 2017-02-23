@@ -1,10 +1,10 @@
 <?php
 include_once ("../dbconfig.php");
 
-$clientLogin = $_REQUEST['login'];
+$login = $_REQUEST['login'];
 
-$sql_query="DELETE FROM online WHERE login='" . $clientName . "'";
+$sql_query = "DELETE FROM online WHERE login='" . $login . "'";
 
 mysqli_query($h, $sql_query);
 
-echo $clientName;
+echo "Logout";

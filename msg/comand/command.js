@@ -34,8 +34,6 @@ function Auth(login, password){
 
     r.send(null);
 }
-//localStorage.getItem("Login");
-//alert(glClientName);
 function Auth_Valid(ans) {
 
     if (ans == "OK") {
@@ -68,6 +66,7 @@ function Auth_Valid(ans) {
     }
 
 }
+
 function Reg(login, email, fname, lname, password1, password2) {
 
     if(password1 == password2)
@@ -115,7 +114,6 @@ function GetClients() {
     if (localStorage.getItem('key')) {
         glClientName = localStorage.getItem('key');
     }
-    alert(glClientName);
     var r = new XMLHttpRequest();
     t = document.getElementById("clients");
     r.open("GET", "msg/profile/clients.php?login=" + glClientName, true);
@@ -130,30 +128,45 @@ function GetClients() {
     r.send(null);
     //console.log("updating list of clients");
 }
-
 function ToClients() {
-
-    document.location.href = '../../client.html';
+    document.location.href = 'client.html';
 }
 
 function Quit(){
     localStorage.getItem("Login");
-    alert(glClientName);
     var r = new XMLHttpRequest();
     r.open("GET", "msg/auth/quit.php?login=" + glClientName, true);
 
     r.onreadystatechange = function () {
         if (r.readyState == 4) {
             var anss = r.responseText;
-            //alert(anss);
+            Quit_Valid(anss);
             //console.log(r.responseText);
         }
     };
 
     r.send(null);
 }
+function Quit_Valid(anss) {
+    if (anss == "Logout") {
+    }
+    document.location.href = 'index.html';
+}
+
+function GameXO() {
+    var r = new XMLHttpRequest();
+    r.open("GET", "msg/comand/game.php", true);
+    t = document.getElementById("game");
+    r.onreadystatechange = function () {
+        //console.log(r.readyState);
+        if (r.readyState == 4 && r.responseText != 0) {
+            t.innerHTML = r.responseText;
+        }
+    }
+}
 
 function Receive() {
+
     var r = new XMLHttpRequest();
     r.open("GET", "msg/receive.php?receiver=" + glClientName, true);
 
@@ -175,8 +188,16 @@ function Receive() {
                 case "invite":
 
                     if (confirm(sender + " wants to play with You...")) {
+
                         //console.log(sender + " is lucky today...");
+
                         Approve(sender);
+
+                        GameXO();
+
+                        if (localStorage.getItem('key')) {
+                            glClientName = localStorage.getItem('key');
+                        }
 
                         glInGame = true;
                         glTurn = false;
@@ -189,6 +210,13 @@ function Receive() {
                 case "approval":
 
                     alert(sender + " wants to play with You too...");
+
+
+                    GameXO();
+
+                    if (localStorage.getItem('key')) {
+                        glClientName = localStorage.getItem('key');
+                    }
 
                     glInGame = true;
                     glTurn = true;
@@ -203,7 +231,6 @@ function Receive() {
 
                     break;
             }
-
         }
     };
 
@@ -212,20 +239,22 @@ function Receive() {
 }
 
 function Invite(opponentName) {
+
     var r = new XMLHttpRequest();
+
     r.open("GET", "msg/send.php?sender=" + glClientName + "&receiver=" + opponentName + "&header=invite" + "&body=you received invitation", true);
 
     r.onreadystatechange = function () {
-
-        //console.log(r.responseText);
+        if (r.readyState == 4) {
+            //console.log(r.responseText);
+        }
     };
-
     r.send(null);
-    document.location.href = '../../game.html';
 }
-
 function Approve(opponentName) {
+
     var r = new XMLHttpRequest();
+
     r.open("GET", "msg/send.php?sender=" + glClientName + "&receiver=" + opponentName + "&header=approval" + "&body=you received approval", true);
 
     r.onreadystatechange = function () {
@@ -236,13 +265,18 @@ function Approve(opponentName) {
     r.send(null);
 }
 
+
 function MakeTurn(sqrId){
+    alert("1");
+    alert(glInGame + " " + glTurn);
     if (glInGame && glTurn)
     {
+        alert("2");
         var sqr = document.getElementById(sqrId);
 
         if(sqr.value == '     ')
         {
+            alert("3");
             sqr.value = glFaction;
             moveCount++;
             glTurn = false;
@@ -253,7 +287,7 @@ function MakeTurn(sqrId){
             r.open("GET", "msg/send.php?sender=" + glClientName + "&receiver=" + glOpponentName + "&header=game" + "&body=" + sqrId, true);
 
             r.onreadystatechange = function () {
-
+                alert(r.responseText);
                 //console.log(r.responseText);
             };
 
@@ -290,7 +324,6 @@ function MakeTurn(sqrId){
     drawCheck();
     */
 }
-
 function WaitTurn(sqrId){
     var sqr = document.getElementById(sqrId);
 
