@@ -12,11 +12,21 @@ $row = mysqli_fetch_row($result_set);
 
 if ($row[1] == $password)
 {
-    $sql_query = "INSERT INTO online(login) VALUES('$login')";
+    $sql_query = "SELECT login FROM online WHERE login='" . $login . "'";
 
     $result_set = mysqli_query($h, $sql_query);
 
-    echo "OK";
+    $row = mysqli_fetch_row($result_set);
+
+    if ($row[0] != $login) {
+        $sql_query = "INSERT INTO online(login) VALUES('$login')";
+
+        $result_set = mysqli_query($h, $sql_query);
+
+        echo "OK";
+    } else {
+        echo "User online";
+    }
 }
 else
 {

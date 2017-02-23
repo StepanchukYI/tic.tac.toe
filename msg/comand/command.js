@@ -1,4 +1,5 @@
 var glClientName;
+var t;
 
 /*function logs() {
     var dateString = "";
@@ -17,7 +18,10 @@ var glClientName;
 function Auth(login, password){
 
     glClientName = login;
-
+    if (localStorage.getItem('key') == undefined) {
+        localStorage.setItem('key', glClientName);
+    }
+    localStorage.setItem('key', glClientName);
     var r = new XMLHttpRequest();
     r.open("GET", "msg/auth/auth.php?login=" + login + "&password=" + password , true);
     r.onreadystatechange = function () {
@@ -30,16 +34,37 @@ function Auth(login, password){
 
     r.send(null);
 }
-function Auth_Valid(ans){
+//localStorage.getItem("Login");
+//alert(glClientName);
+function Auth_Valid(ans) {
 
-    if(ans == "OK")
-    {
+    if (ans == "OK") {
+
+        if (localStorage.getItem('key') == undefined) {
+            localStorage.setItem('key', glClientName);
+        }
+
         document.location.href = 'client.html';
+
+        if (localStorage.getItem('key')) {
+            alert(localStorage.getItem('key'));
+        }
     }
-    if(ans == "FailedPass")
-    {
-        var t = document.getElementById("pass_msg");
+    if (ans == "FailedPass") {
+        t = document.getElementById("pass_msg");
         t.innerHTML = "Failed pass";
+    }
+    if (ans == "User online") {
+
+        if (localStorage.getItem('key') == undefined) {
+            localStorage.setItem('key', glClientName);
+        }
+
+        document.location.href = 'client.html';
+
+        if (localStorage.getItem('key')) {
+            alert(localStorage.getItem('key'));
+        }
     }
 
 }
@@ -62,15 +87,12 @@ function Reg(login, email, fname, lname, password1, password2) {
         r.send(null);
     }
     else{
-        var t = document.getElementById("msg_password");
+        t = document.getElementById("msg_password");
         t.innerHTML="Wrong password!";
     }
 }
 function Reg_Valid(anser){
-    //var t = document.getElementById("msg_login");
-    //t.empty();
-    //var t = document.getElementById("msg_email");
-    //t.empty();
+
     if(anser == "User created")
     {
         document.location.href = 'index.html';
@@ -78,26 +100,31 @@ function Reg_Valid(anser){
 
     if(anser == "Login already using")
     {
-        var t = document.getElementById("msg_login");
+        t = document.getElementById("msg_login");
         t.innerHTML="Login already using!";
     }
     if(anser == "Email already using")
     {
-        var t = document.getElementById("msg_email");
+        t = document.getElementById("msg_email");
         t.innerHTML="Email already using!";
     }
 
 }
 
 function GetClients() {
+    if (localStorage.getItem('key')) {
+        glClientName = localStorage.getItem('key');
+    }
+    alert(glClientName);
     var r = new XMLHttpRequest();
-    var t = document.getElementById("clients");
+    t = document.getElementById("clients");
     r.open("GET", "msg/profile/clients.php?login=" + glClientName, true);
 
     r.onreadystatechange = function () {
-
-        //console.log(r.responseText);
-        t.innerHTML = r.responseText;
+        if (r.readyState == 4) {
+            //console.log(r.responseText);
+            t.innerHTML = r.responseText;
+        }
     };
 
     r.send(null);
@@ -110,13 +137,17 @@ function ToClients() {
 }
 
 function Quit(){
-    alert();
+    localStorage.getItem("Login");
+    alert(glClientName);
     var r = new XMLHttpRequest();
     r.open("GET", "msg/auth/quit.php?login=" + glClientName, true);
 
     r.onreadystatechange = function () {
-
-        //console.log(r.responseText);
+        if (r.readyState == 4) {
+            var anss = r.responseText;
+            //alert(anss);
+            //console.log(r.responseText);
+        }
     };
 
     r.send(null);
