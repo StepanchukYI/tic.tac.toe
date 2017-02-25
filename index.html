@@ -1,24 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Tic Tac Toe</title>
-    <script type="text/javascript" src="msg/command/command.js"></script>
+    <title>Вход</title>
+    <script type="text/javascript" src="command.js"></script>
+    <style>
+        div {
+            margin: auto;
+            width: 30%;
+            border: 3px solid black;
+            padding: 50px;
+        }
+    </style>
 </head>
+
 <body>
-<section id="cont">
-    <div id="form1">
-        <form method="post" name="login">
-            <input type="text" id="txt_login" placeholder="Type your login" required/><br/>
-            <input type="password" id="txt_pass" placeholder="Type your password" required/><br/>
-            <div id="pass_msg"></div>
-            <div id="link"><a id="link_reg" href="register.html">Register now</a> <a id="link_pwd" href="forgot_pass.html">Forgot password?</a></div>
 
-            <input type="button" id="btn_auth" value="Login" onclick="Auth(txt_login.value, txt_pass.value)"/>
+<div align="center">
+    <form name="log" method="post">
+        <table align="center" cellspacing="0" cellpadding="4">
+            <caption><h1>Вход</h1></caption>
+            <tr align="center">
+                <td colspan="2"><input type="text" id="txt_login" placeholder="Ваш E-mail или логин" required/></td>
+            </tr>
+            <tr align="center">
+                <td colspan="2"><input type="password" id="txt_pass" placeholder="Пароль" required/></td>
+            </tr>
+            <tr>
+                <td><input type="button" id="btn_Login" value="Войти" onclick="Auth(txt_login.value, txt_pass.value)"/>
+                </td>
+                <td><a href="indexreg.html">Регистрация</a></td>
+            </tr>
+            <tr align="center">
+                <td colspan="2"><a href="indexforpass.html">Забыли пароль?</a></td>
+            </tr>
+        </table>
+    </form>
+</div>
 
-        </form>
-    </div>
-</section>
 
 </body>
 </html>

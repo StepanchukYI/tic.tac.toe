@@ -71,12 +71,12 @@ function Auth_Valid(ans) {
 
 }
 
-function Reg(login, email, fname, lname, password1, password2) {
+function Reg(login, email, password1, password2) {
 
     if(password1 == password2)
     {
         var r = new XMLHttpRequest();
-        r.open("GET", "msg/reg/reg.php?login="+login+"&password="+password1+"&fname="+fname+"&lname="+lname+"&email="+email, true);
+        r.open("GET", "msg/reg/reg.php?login=" + login + "&password=" + password1 + "&email=" + email, true);
         r.onreadystatechange = function () {
             if (r.readyState == 4) {
             //document.getElementById("result").innerHTML += r.responseText;
@@ -190,8 +190,8 @@ function Receive() {
                             glClientName = localStorage.getItem('key');
                         }
 
-                        glInGame = true;
-                        glTurn = false;
+                        glInGame = "true";
+                        glTurn = "false";
                         glFaction = " O ";
                         glOpponentName = sender;
 
@@ -206,6 +206,7 @@ function Receive() {
                         glTurn = localStorage.getItem('glTurn');
                         glFaction = localStorage.getItem('glFaction');
                         glOpponentName = localStorage.getItem('glOpponentName');
+                        glClientName = localStorage.getItem('key');
 
                         //alert(glInGame + " " + glTurn + " " + glFaction + " " + glOpponentName);
 
@@ -223,8 +224,8 @@ function Receive() {
                     }
 
 
-                    glInGame = true;
-                    glTurn = true;
+                    glInGame = "true";
+                    glTurn = "true";
                     glFaction = " X ";
                     glOpponentName = sender;
 
@@ -239,6 +240,7 @@ function Receive() {
                     glTurn = localStorage.getItem('glTurn');
                     glFaction = localStorage.getItem('glFaction');
                     glOpponentName = localStorage.getItem('glOpponentName');
+                    glClientName = localStorage.getItem('key');
 
                     //alert(glInGame + " " + glTurn + " " + glFaction + " " + glOpponentName);
 
@@ -246,7 +248,6 @@ function Receive() {
 
                 case "game":
 
-                    alert("4")
                     WaitTurn(body);
 
                     break;
@@ -291,16 +292,23 @@ function MakeTurn(sqrId) {
     glTurn = localStorage.getItem('glTurn');
     glFaction = localStorage.getItem('glFaction');
     glOpponentName = localStorage.getItem('glOpponentName');
+    glClientName = localStorage.getItem('key');
 
-    if (glInGame && glTurn) {
+    if (glInGame == "true" && glTurn == "true") {
         var sqr = document.getElementById(sqrId);
 
         if (sqr.value == '     ') {
             sqr.value = glFaction;
             moveCount++;
-            glTurn = false;
+            glTurn = "false";
             vari();
             check();
+
+            localStorage.setItem('glInGame', glInGame);
+            localStorage.setItem('glTurn', glTurn);
+            localStorage.setItem('glFaction', glFaction);
+            localStorage.setItem('glOpponentName', glOpponentName);
+            localStorage.setItem('key', glClientName);
 
             var r = new XMLHttpRequest();
             r.open("GET", "msg/send.php?sender=" + glClientName + "&receiver=" + glOpponentName + "&header=game" + "&body=" + sqrId, true);
@@ -319,6 +327,12 @@ function MakeTurn(sqrId) {
 }
 function WaitTurn(sqrId){
 
+    glInGame = localStorage.getItem('glInGame');
+    glTurn = localStorage.getItem('glTurn');
+    glFaction = localStorage.getItem('glFaction');
+    glOpponentName = localStorage.getItem('glOpponentName');
+    glClientName = localStorage.getItem('key');
+
     var sqr = document.getElementById(sqrId);
 
     if (glFaction == " X ")
@@ -327,9 +341,17 @@ function WaitTurn(sqrId){
         sqr.value = " X ";
 
     moveCount++;
-    glTurn = true;
+    glTurn = "true";
     vari();
     check();
+    localStorage.setItem('glInGame', glInGame);
+    localStorage.setItem('glTurn', glTurn);
+    localStorage.setItem('glFaction', glFaction);
+    localStorage.setItem('glOpponentName', glOpponentName);
+    localStorage.setItem('key', glClientName);
+
+
+    console.log(glInGame + " " + glTurn + " " + glFaction + " " + glOpponentName + " " + glClientName);
 }
 
 
@@ -983,8 +1005,4 @@ function reset()
     moveCount = 0;
 
     glInGame = false;
-}
-function resetter()
-{
-    reset();
 }

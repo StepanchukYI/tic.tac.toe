@@ -3,8 +3,6 @@ include_once("../dbconfig.php");
 
 $login = $_REQUEST['login'];
 $password = $_REQUEST['password'];
-$fname = $_REQUEST['fname'];
-$lname = $_REQUEST['lname'];
 $email = $_REQUEST['email'];
 
 $sql_query = "SELECT login FROM clients WHERE login='" . $login . "'";
@@ -23,7 +21,7 @@ if ($row[0] != $login)
 
     if ($row[0] != $email)
     {
-        $sql_query = "INSERT INTO clients(login,password,fname,lname,email) VALUES('$login', '$password', '$fname', '$lname', '$email')";
+        $sql_query = "INSERT INTO clients(login,password,email) VALUES('$login', '$password', '$email')";
 
         mysqli_query($h, $sql_query);
 
