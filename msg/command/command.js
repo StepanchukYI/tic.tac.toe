@@ -154,12 +154,22 @@ function Quit_Valid(anss) {
 }
 
 function GameXO() {
+
+    alert("1");
     var r = new XMLHttpRequest();
-    r.open("GET", "msg/comand/game.php", true);
-    t = document.getElementById("game");
+
+    r.open("GET", "msg/command/game.php?game=" + "game", true);
+
     r.onreadystatechange = function () {
+        alert("5");
         //console.log(r.readyState);
+
         if (r.readyState == 4 && r.responseText != 0) {
+
+            alert("4");
+            alert(r.responseText);
+
+            t = document.getElementById("game");
             t.innerHTML = r.responseText;
         }
     }
@@ -193,6 +203,7 @@ function Receive() {
 
                         Approve(sender);
 
+                        alert("2");
                         GameXO();
 
                         if (localStorage.getItem('key')) {
@@ -211,7 +222,7 @@ function Receive() {
 
                     alert(sender + " wants to play with You too...");
 
-
+                    alert("3");
                     GameXO();
 
                     if (localStorage.getItem('key')) {
