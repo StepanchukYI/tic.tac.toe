@@ -1,5 +1,9 @@
 var glClientName;
 var t;
+var glOpponentName;
+var glTurn;
+var glInGame;
+var glFaction;
 
 /*function logs() {
     var dateString = "";
@@ -45,7 +49,7 @@ function Auth_Valid(ans) {
         document.location.href = 'client.html';
 
         if (localStorage.getItem('key')) {
-            alert(localStorage.getItem('key'));
+            glClientName = localStorage.getItem('key');
         }
     }
     if (ans == "FailedPass") {
@@ -129,6 +133,7 @@ function GetClients() {
     //console.log("updating list of clients");
 }
 function ToClients() {
+
     document.location.href = 'client.html';
 }
 
@@ -151,28 +156,6 @@ function Quit_Valid(anss) {
     if (anss == "Logout") {
     }
     document.location.href = 'index.html';
-}
-
-function GameXO() {
-
-    alert("1");
-    var r = new XMLHttpRequest();
-
-    r.open("GET", "msg/command/game.php?game=" + "game", true);
-
-    r.onreadystatechange = function () {
-        alert("5");
-        //console.log(r.readyState);
-
-        if (r.readyState == 4 && r.responseText != 0) {
-
-            alert("4");
-            alert(r.responseText);
-
-            t = document.getElementById("game");
-            t.innerHTML = r.responseText;
-        }
-    }
 }
 
 function Receive() {
@@ -203,9 +186,6 @@ function Receive() {
 
                         Approve(sender);
 
-                        alert("2");
-                        GameXO();
-
                         if (localStorage.getItem('key')) {
                             glClientName = localStorage.getItem('key');
                         }
@@ -214,6 +194,21 @@ function Receive() {
                         glTurn = false;
                         glFaction = " O ";
                         glOpponentName = sender;
+
+                        localStorage.setItem('glInGame', glInGame);
+                        localStorage.setItem('glTurn', glTurn);
+                        localStorage.setItem('glFaction', glFaction);
+                        localStorage.setItem('glOpponentName', glOpponentName);
+
+                        document.location.href = 'game.html';
+
+                        glInGame = localStorage.getItem('glInGame');
+                        glTurn = localStorage.getItem('glTurn');
+                        glFaction = localStorage.getItem('glFaction');
+                        glOpponentName = localStorage.getItem('glOpponentName');
+
+                        //alert(glInGame + " " + glTurn + " " + glFaction + " " + glOpponentName);
+
                     }
 
                     break;
@@ -222,22 +217,36 @@ function Receive() {
 
                     alert(sender + " wants to play with You too...");
 
-                    alert("3");
-                    GameXO();
 
                     if (localStorage.getItem('key')) {
                         glClientName = localStorage.getItem('key');
                     }
+
 
                     glInGame = true;
                     glTurn = true;
                     glFaction = " X ";
                     glOpponentName = sender;
 
+                    localStorage.setItem('glInGame', glInGame);
+                    localStorage.setItem('glTurn', glTurn);
+                    localStorage.setItem('glFaction', glFaction);
+                    localStorage.setItem('glOpponentName', glOpponentName);
+
+                    document.location.href = 'game.html';
+
+                    glInGame = localStorage.getItem('glInGame');
+                    glTurn = localStorage.getItem('glTurn');
+                    glFaction = localStorage.getItem('glFaction');
+                    glOpponentName = localStorage.getItem('glOpponentName');
+
+                    //alert(glInGame + " " + glTurn + " " + glFaction + " " + glOpponentName);
+
                     break;
 
                 case "game":
 
+                    alert("4")
                     WaitTurn(body);
 
                     break;
@@ -248,7 +257,6 @@ function Receive() {
     r.send(null);
     //console.log("receiving new messages");
 }
-
 function Invite(opponentName) {
 
     var r = new XMLHttpRequest();
@@ -277,17 +285,17 @@ function Approve(opponentName) {
 }
 
 
-function MakeTurn(sqrId){
-    alert("1");
-    alert(glInGame + " " + glTurn);
-    if (glInGame && glTurn)
-    {
-        alert("2");
+function MakeTurn(sqrId) {
+
+    glInGame = localStorage.getItem('glInGame');
+    glTurn = localStorage.getItem('glTurn');
+    glFaction = localStorage.getItem('glFaction');
+    glOpponentName = localStorage.getItem('glOpponentName');
+
+    if (glInGame && glTurn) {
         var sqr = document.getElementById(sqrId);
 
-        if(sqr.value == '     ')
-        {
-            alert("3");
+        if (sqr.value == '     ') {
             sqr.value = glFaction;
             moveCount++;
             glTurn = false;
@@ -298,44 +306,19 @@ function MakeTurn(sqrId){
             r.open("GET", "msg/send.php?sender=" + glClientName + "&receiver=" + glOpponentName + "&header=game" + "&body=" + sqrId, true);
 
             r.onreadystatechange = function () {
-                alert(r.responseText);
-                //console.log(r.responseText);
+
+                if (r.readyState == 4) {
+                    r.responseText;
+                    //console.log(r.responseText);
+                }
             };
 
             r.send(null);
         }
     }
-
-    /*
-    var sqr = document.getElementById(sqrId);
-    if(sqr.value == '     ' && turn == 0 && mode == 1)
-    {
-        sqr.value = ' X ';
-        moveCount++;
-        turn = 1;
-        vari();
-        check();
-    }
-    else if(sqr.value == '     ' && turn == 1 && mode == 2)
-    {
-        sqr.value = ' X ';
-        moveCount++;
-        turn = 0;
-        vari();
-        player1Check()
-    }
-    else if(sqr.value == '     ' && turn == 0 && mode == 2)
-    {
-        sqr.value = ' O ';
-        moveCount++;
-        turn = 1;
-        vari();
-        player1Check()
-    }
-    drawCheck();
-    */
 }
 function WaitTurn(sqrId){
+
     var sqr = document.getElementById(sqrId);
 
     if (glFaction == " X ")
@@ -348,12 +331,6 @@ function WaitTurn(sqrId){
     vari();
     check();
 }
-
-var glOpponentName;
-var glTurn;
-var glInGame;
-var glFaction;
-
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -371,20 +348,9 @@ var sqr6;
 var sqr7;
 var sqr8;
 var sqr9;
-/*
-var sqr1T = 0
-var sqr2T = 0
-var sqr3T = 0
-var sqr4T = 0
-var sqr5T = 0
-var sqr6T = 0
-var sqr7T = 0
-var sqr8T = 0
-var sqr9T = 0
-*/
+
 var moveCount = 0;
 var turn = 0;
-var mode = 1;
 
 function vari()
 {

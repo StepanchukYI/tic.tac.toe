@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game XO</title>
+    <script type="text/javascript" src="msg/command/command.js"></script>
+</head>
+
+<body>
+<style>
+    .tictac {
+        width: 50px;
+        height: 50px;
+    }
+</style>
+
+<script>
+    setInterval(Receive, 1000);
+</script>
+<div id="game">
+    <FORM NAME="tic" method="post">
+        <INPUT TYPE="button" id="sqr1" class="tictac" value="     " onClick="MakeTurn('sqr1')">
+        <INPUT TYPE="button" id="sqr2" class="tictac" value="     " onClick="MakeTurn('sqr2')">
+        <INPUT TYPE="button" id="sqr3" class="tictac" value="     " onClick="MakeTurn('sqr3')"><br/>
+        <INPUT TYPE="button" id="sqr4" class="tictac" value="     " onClick="MakeTurn('sqr4')">
+        <INPUT TYPE="button" id="sqr5" class="tictac" value="     " onClick="MakeTurn('sqr5')">
+        <INPUT TYPE="button" id="sqr6" class="tictac" value="     " onClick="MakeTurn('sqr6')"><br/>
+        <INPUT TYPE="button" id="sqr7" class="tictac" value="     " onClick="MakeTurn('sqr7')">
+        <INPUT TYPE="button" id="sqr8" class="tictac" value="     " onClick="MakeTurn('sqr8')">
+        <INPUT TYPE="button" id="sqr9" class="tictac" value="     " onClick="MakeTurn('sqr9')">
+    </form>
+    <INPUT TYPE="button" id="return" class="" value="Return" onClick="ToClients()">
+</div>
+</body>
+</html>
