@@ -1,43 +1,79 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Вход</title>
-    <script type="text/javascript" src="command.js"></script>
+    <title>Tic Tac Toe</title>
     <style>
-        div {
-            margin: auto;
-            width: 30%;
+        #frame {
+            position: absolute;
+            top: 3%;
+            left: 36%;
+            width: 22%;
+            height: 30%;
             border: 3px solid black;
-            padding: 50px;
         }
+
+        #lbEnter {
+            top: 2%;
+            left: 45%;
+            position: absolute;
+        }
+
+        #txt_login {
+            width: 200px;
+            top: 10%;
+            left: 40%;
+            position: absolute;
+            border: 2px solid black;
+        }
+
+        #txt_pass {
+            width: 200px;
+            top: 15%;
+            left: 40%;
+            position: absolute;
+            border: 2px solid black;
+        }
+
+        #btn_auth {
+            width: 205px;
+            top: 20%;
+            left: 40%;
+            position: absolute;
+            border: 2px solid black;
+        }
+
+        #link {
+            font-size: 18px;
+            top: 25%;
+            left: 37%;
+            position: absolute;
+        }
+
+        #btn_auth {
+
+        }
+
     </style>
+    <script type="text/javascript" src="msg/command/command.js"></script>
 </head>
-
 <body>
+<section id="cont">
+    <div id="form1">
+        <form method="post" name="login">
+            <div id="frame"></div>
+            <div id="lbEnter"><h3>Вход</h3></div>
+            <input type="text" id="txt_login" placeholder="Ваше имя" required/><br/>
+            <input type="password" id="txt_pass" placeholder="Пароль" required/><br/>
+            <div id="pass_msg"></div>
+            <div id="link"><a id="link_reg" href="register.html">Первый раз на сайте?</a> <a id="link_pwd"
+                                                                                             href="forgot_pass.html">Забыли
+                пароль?</a></div>
+            <input type="button" id="btn_auth" value="Войти" onclick="Auth(txt_login.value, txt_pass.value)"/>
 
-<div align="center">
-    <form name="log" method="post">
-        <table align="center" cellspacing="0" cellpadding="4">
-            <caption><h1>Вход</h1></caption>
-            <tr align="center">
-                <td colspan="2"><input type="text" id="txt_login" placeholder="Ваш E-mail или логин" required/></td>
-            </tr>
-            <tr align="center">
-                <td colspan="2"><input type="password" id="txt_pass" placeholder="Пароль" required/></td>
-            </tr>
-            <tr>
-                <td><input type="button" id="btn_Login" value="Войти" onclick="Auth(txt_login.value, txt_pass.value)"/>
-                </td>
-                <td><a href="indexreg.html">Регистрация</a></td>
-            </tr>
-            <tr align="center">
-                <td colspan="2"><a href="indexforpass.html">Забыли пароль?</a></td>
-            </tr>
-        </table>
-    </form>
-</div>
-
+        </form>
+    </div>
+</section>
 
 </body>
 </html>

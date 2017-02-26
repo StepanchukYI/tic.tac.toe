@@ -11,7 +11,7 @@ var glFaction;
     dateString += (newDate.getMonth() + 1) + "-";
     dateString += newDate.getDate() + "-";
     dateString += newDate.getFullYear();
-    b="C:\\" + dateString + ".txt";
+ b="log\" + dateString + ".txt";
     alert(b);
     var fso, f1;
     fso = new ActiveXObject("Scripting.FileSystemObject");
@@ -22,9 +22,6 @@ var glFaction;
 function Auth(login, password){
 
     glClientName = login;
-    if (localStorage.getItem('key') == undefined) {
-        localStorage.setItem('key', glClientName);
-    }
     localStorage.setItem('key', glClientName);
     var r = new XMLHttpRequest();
     r.open("GET", "msg/auth/auth.php?login=" + login + "&password=" + password , true);
@@ -35,7 +32,8 @@ function Auth(login, password){
             Auth_Valid(ans);
         }
     };
-
+    glInGame = "false";
+    localStorage.setItem('glInGame', glInGame);
     r.send(null);
 }
 function Auth_Valid(ans) {
@@ -51,6 +49,7 @@ function Auth_Valid(ans) {
         if (localStorage.getItem('key')) {
             glClientName = localStorage.getItem('key');
         }
+        lbLogin.value = glClientName;
     }
     if (ans == "FailedPass") {
         t = document.getElementById("pass_msg");
@@ -65,8 +64,12 @@ function Auth_Valid(ans) {
         document.location.href = 'client.html';
 
         if (localStorage.getItem('key')) {
-            alert(localStorage.getItem('key'));
+            localStorage.getItem('key');
         }
+
+        t = document.getElementById("lbLoginL");
+        lbLogin.value = glClientName;
+
     }
 
 }
@@ -115,17 +118,26 @@ function Reg_Valid(anser){
 }
 
 function GetClients() {
+
     if (localStorage.getItem('key')) {
         glClientName = localStorage.getItem('key');
     }
+
+    var m = document.getElementById("lbLoginL");
+    m.innerHTML = glClientName;
+
     var r = new XMLHttpRequest();
+
     t = document.getElementById("clients");
+
     r.open("GET", "msg/profile/clients.php?login=" + glClientName, true);
 
     r.onreadystatechange = function () {
         if (r.readyState == 4) {
             //console.log(r.responseText);
             t.innerHTML = r.responseText;
+            var m = document.getElementById("lbLoginL");
+            m.innerHTML = glClientName;
         }
     };
 
@@ -135,6 +147,7 @@ function GetClients() {
 function ToClients() {
 
     document.location.href = 'client.html';
+
 }
 
 function Quit(){
@@ -149,7 +162,8 @@ function Quit(){
             //console.log(r.responseText);
         }
     };
-
+    glInGame = "false";
+    localStorage.setItem('glInGame', glInGame);
     r.send(null);
 }
 function Quit_Valid(anss) {
@@ -179,38 +193,51 @@ function Receive() {
 
             switch (header) {
                 case "invite":
+                    glInGame = localStorage.getItem('glInGame');
+                    if (glInGame == "false") {
+                        if (confirm(sender + " wants to play with You...")) {
 
-                    if (confirm(sender + " wants to play with You...")) {
+                            //console.log(sender + " is lucky today...");
 
-                        //console.log(sender + " is lucky today...");
+                            Approve(sender);
 
-                        Approve(sender);
+                            if (localStorage.getItem('key')) {
+                                glClientName = localStorage.getItem('key');
+                            }
 
-                        if (localStorage.getItem('key')) {
+                            glInGame = "true";
+                            glTurn = "false";
+                            glFaction = " O ";
+                            glOpponentName = sender;
+
+                            localStorage.setItem('glInGame', glInGame);
+                            localStorage.setItem('glTurn', glTurn);
+                            localStorage.setItem('glFaction', glFaction);
+                            localStorage.setItem('glOpponentName', glOpponentName);
+
+                            document.location.href = 'game.html';
+
+                            glInGame = localStorage.getItem('glInGame');
+                            glTurn = localStorage.getItem('glTurn');
+                            glFaction = localStorage.getItem('glFaction');
+                            glOpponentName = localStorage.getItem('glOpponentName');
                             glClientName = localStorage.getItem('key');
+
+                            //alert(glInGame + " " + glTurn + " " + glFaction + " " + glOpponentName);
+
                         }
-
-                        glInGame = "true";
-                        glTurn = "false";
-                        glFaction = " O ";
-                        glOpponentName = sender;
-
-                        localStorage.setItem('glInGame', glInGame);
-                        localStorage.setItem('glTurn', glTurn);
-                        localStorage.setItem('glFaction', glFaction);
-                        localStorage.setItem('glOpponentName', glOpponentName);
-
-                        document.location.href = 'game.html';
-
-                        glInGame = localStorage.getItem('glInGame');
-                        glTurn = localStorage.getItem('glTurn');
-                        glFaction = localStorage.getItem('glFaction');
-                        glOpponentName = localStorage.getItem('glOpponentName');
-                        glClientName = localStorage.getItem('key');
-
-                        //alert(glInGame + " " + glTurn + " " + glFaction + " " + glOpponentName);
-
+                        else {
+                            Deny(sender);
+                        }
                     }
+                    else {
+                        Deny(sender);
+                    }
+
+                    break;
+                case "denial":
+
+                    alert(sender + " doesn`t want to play with You");
 
                     break;
 
@@ -259,7 +286,6 @@ function Receive() {
     //console.log("receiving new messages");
 }
 function Invite(opponentName) {
-
     var r = new XMLHttpRequest();
 
     r.open("GET", "msg/send.php?sender=" + glClientName + "&receiver=" + opponentName + "&header=invite" + "&body=you received invitation", true);
@@ -284,7 +310,19 @@ function Approve(opponentName) {
 
     r.send(null);
 }
+function Deny(opponentName) {
 
+    var r = new XMLHttpRequest();
+
+    r.open("GET", "msg/send.php?sender=" + glClientName + "&receiver=" + opponentName + "&header=denial" + "&body=you received denial", true);
+
+    r.onreadystatechange = function () {
+
+        //console.log(r.responseText);
+    };
+
+    r.send(null);
+}
 
 function MakeTurn(sqrId) {
 
@@ -302,7 +340,7 @@ function MakeTurn(sqrId) {
             moveCount++;
             glTurn = "false";
             vari();
-            check();
+
 
             localStorage.setItem('glInGame', glInGame);
             localStorage.setItem('glTurn', glTurn);
@@ -314,9 +352,9 @@ function MakeTurn(sqrId) {
             r.open("GET", "msg/send.php?sender=" + glClientName + "&receiver=" + glOpponentName + "&header=game" + "&body=" + sqrId, true);
 
             r.onreadystatechange = function () {
-
                 if (r.readyState == 4) {
-                    r.responseText;
+                    check();
+                    //r.responseText;
                     //console.log(r.responseText);
                 }
             };
@@ -359,8 +397,6 @@ function WaitTurn(sqrId){
 //женщинам, детям и людям со слабой психикой не стоит смотреть код дальше//
 ///////////////////////////////////////////////////////////////////////////
 
-
-
 var sqr1;
 var sqr2;
 var sqr3;
@@ -374,8 +410,7 @@ var sqr9;
 var moveCount = 0;
 var turn = 0;
 
-function vari()
-{
+function vari() {
     sqr1 = document.tic.sqr1.value;
     sqr2 = document.tic.sqr2.value;
     sqr3 = document.tic.sqr3.value;
@@ -386,602 +421,122 @@ function vari()
     sqr8 = document.tic.sqr8.value;
     sqr9 = document.tic.sqr9.value;
 }
-function check()
-{
-    if(sqr1 == " X " && sqr2 == " X " && sqr3 == " X ")
+function check() {
+
+    if (sqr1 == glFaction && sqr2 == glFaction && sqr3 == glFaction)
     {
         alert("You Win!");
         reset();
     }
-    else if(sqr4 == " X " && sqr5 == " X " && sqr6 == " X ")
+    else if (sqr4 == glFaction && sqr5 == glFaction && sqr6 == glFaction)
     {
         alert("You Win!");
         reset();
     }
-    else if(sqr7 == " X " && sqr8 == " X " && sqr9 == " X ")
+    else if (sqr7 == glFaction && sqr8 == glFaction && sqr9 == glFaction)
     {
         alert("You Win!");
         reset();
     }
-    else if(sqr1 == " X " && sqr5 == " X " && sqr9 == " X ")
+    else if (sqr1 == glFaction && sqr5 == glFaction && sqr9 == glFaction)
     {
         alert("You Win!");
         reset();
     }
-    else if(sqr1 == " X " && sqr4 == " X " && sqr7 == " X ")
+    else if (sqr1 == glFaction && sqr4 == glFaction && sqr7 == glFaction)
     {
         alert("You Win!");
         reset();
     }
-    else if(sqr2 == " X " && sqr5 == " X " && sqr8 == " X ")
+    else if (sqr2 == glFaction && sqr5 == glFaction && sqr8 == glFaction)
     {
         alert("You Win!");
         reset();
     }
-    else if(sqr3 == " X " && sqr6 == " X " && sqr9 == " X ")
+    else if (sqr3 == glFaction && sqr6 == glFaction && sqr9 == glFaction)
     {
         alert("You Win!");
         reset();
     }
-    else if(sqr1 == " X " && sqr5 == " X " && sqr9 == " X ")
+    else if (sqr1 == glFaction && sqr5 == glFaction && sqr9 == glFaction)
     {
         alert("You Win!");
         reset();
     }
-    else if(sqr3 == " X " && sqr5 == " X " && sqr7 == " X ")
+    else if (sqr3 == glFaction && sqr5 == glFaction && sqr7 == glFaction)
     {
         alert("You Win!");
         reset();
     }
     else
     {
-        //winCheck()
         check2();
         drawCheck();
     }
 }
-function check2()
-{
-    vari();
-    drawCheck();
-    if(sqr1 == " O " && sqr2 == " O " && sqr3 == " O ")
+function check2() {
+    var opFaction;
+    if (glFaction == " X ") {
+        opFaction = " O ";
+    }
+    else {
+        opFaction = " X ";
+    }
+    if (sqr1 == opFaction && sqr2 == opFaction && sqr3 == opFaction)
     {
         alert("You Lose!");
         reset()
     }
-    else if(sqr4 == " O " && sqr5 == " O " && sqr6 == " O ")
+    else if (sqr4 == opFaction && sqr5 == opFaction && sqr6 == opFaction)
     {
         alert("You Lose!");
         reset()
     }
-    else if(sqr7 == " O " && sqr8 == " O " && sqr9 == " O ")
+    else if (sqr7 == opFaction && sqr8 == opFaction && sqr9 == opFaction)
     {
         alert("You Lose!");
         reset()
     }
-    else if(sqr1 == " O " && sqr5 == " O " && sqr9 == " O ")
+    else if (sqr1 == opFaction && sqr5 == opFaction && sqr9 == opFaction)
     {
         alert("You Lose!");
         reset()
     }
-    else if(sqr1 == " O " && sqr4 == " O " && sqr7 == " O ")
+    else if (sqr1 == opFaction && sqr4 == opFaction && sqr7 == opFaction)
     {
         alert("You Lose!");
         reset()
     }
-    else if(sqr2 == " O " && sqr5 == " O " && sqr8 == " O ")
+    else if (sqr2 == opFaction && sqr5 == opFaction && sqr8 == opFaction)
     {
         alert("You Lose!");
         reset()
     }
-    else if(sqr3 == " O " && sqr6 == " O " && sqr9 == " O ")
+    else if (sqr3 == opFaction && sqr6 == opFaction && sqr9 == opFaction)
     {
         alert("You Lose!");
         reset()
     }
-    else if(sqr1 == " O " && sqr5 == " O " && sqr9 == " O ")
+    else if (sqr1 == opFaction && sqr5 == opFaction && sqr9 == opFaction)
     {
         alert("You Lose!");
         reset()
     }
-    else if(sqr3 == " O " && sqr5 == " O " && sqr7 == " O ")
+    else if (sqr3 == opFaction && sqr5 == opFaction && sqr7 == opFaction)
     {
         alert("You Lose!");
         reset()
     }
 }
-function player1Check()
-{
-    if(sqr1 == " X " && sqr2 == " X " && sqr3 == " X ")
-    {
-        alert("Player 1 wins!");
-        reset();
-    }
-    else if(sqr4 == " X " && sqr5 == " X " && sqr6 == " X ")
-    {
-        alert("Player 1 wins!");
-        reset();
-    }
-    else if(sqr7 == " X " && sqr8 == " X " && sqr9 == " X ")
-    {
-        alert("Player 1 wins!");
-        reset();
-    }
-    else if(sqr1 == " X " && sqr5 == " X " && sqr9 == " X ")
-    {
-        alert("Player 1 wins!");
-        reset();
-    }
-    else if(sqr1 == " X " && sqr4 == " X " && sqr7 == " X ")
-    {
-        alert("Player 1 wins!");
-        reset();
-    }
-    else if(sqr2 == " X " && sqr5 == " X " && sqr8 == " X ")
-    {
-        alert("Player 1 wins!");
-        reset();
-    }
-    else if(sqr3 == " X " && sqr6 == " X " && sqr9 == " X ")
-    {
-        alert("Player 1 wins!");
-        reset();
-    }
-    else if(sqr1 == " X " && sqr5 == " X " && sqr9 == " X ")
-    {
-        alert("Player 1 wins!");
-        reset();
-    }
-    else if(sqr3 == " X " && sqr5 == " X " && sqr7 == " X ")
-    {
-        alert("Player 1 wins!");
-        reset();
-    }
-    else
-    {
-        player2Check();
-        drawCheck();
-    }
-}
-function player2Check()
-{
+function drawCheck() {
     vari();
-    drawCheck();
-    if(sqr1 == " O " && sqr2 == " O " && sqr3 == " O ")
-    {
-        alert("Player 2 wins!");
-        reset();
-    }
-    else if(sqr4 == " O " && sqr5 == " O " && sqr6 == " O ")
-    {
-        alert("Player 2 wins!");
-        reset();
-    }
-    else if(sqr7 == " O " && sqr8 == " O " && sqr9 == " O ")
-    {
-        alert("Player 2 wins!");
-        reset();
-    }
-    else if(sqr1 == " O " && sqr5 == " O " && sqr9 == " O ")
-    {
-        alert("Player 2 wins!");
-        reset();
-    }
-    else if(sqr1 == " O " && sqr4 == " O " && sqr7 == " O ")
-    {
-        alert("Player 2 wins!");
-        reset();
-    }
-    else if(sqr2 == " O " && sqr5 == " O " && sqr8 == " O ")
-    {
-        alert("Player 2 wins!");
-        reset();
-    }
-    else if(sqr3 == " O " && sqr6 == " O " && sqr9 == " O ")
-    {
-        alert("Player 2 wins!");
-        reset();
-    }
-    else if(sqr1 == " O " && sqr5 == " O " && sqr9 == " O ")
-    {
-        alert("Player 2 wins!");
-        reset();
-    }
-    else if(sqr3 == " O " && sqr5 == " O " && sqr7 == " O ")
-    {
-        alert("Player 2 wins!");
-        reset();
-    }
-}
-function drawCheck()
-{
-    vari();
-    //moveCount = sqr1T + sqr2T + sqr3T + sqr4T + sqr5T + sqr6T + sqr7T + sqr8T + sqr9T
     if(moveCount == 9)
     {
-        reset();
         alert("Draw");
+        reset();
     }
 }
-function winCheck()
-{
-    check2();
-    if(sqr1 == " O " && sqr2 == " O " && sqr3T == 0 && turn == 1)
-    {
-        document.tic.sqr3.value = " O ";
-        sqr3T = 1;
-        turn = 0;
-    }
-    else if(sqr2 == " O " && sqr3 == " O " && sqr1T == 0 && turn == 1)
-    {
-        document.tic.sqr1.value = " O ";
-        sqr1T = 1;
-        turn = 0;
-    }
-    else if(sqr4 == " O " && sqr5 == " O " && sqr6T == 0 && turn == 1)
-    {
-        document.tic.sqr6.value = " O ";
-        sqr6T = 1;
-        turn = 0;
-    }
-    else if(sqr5 == " O " && sqr6 == " O " && sqr4T == 0 && turn == 1)
-    {
-        document.tic.sqr4.value = " O ";
-        sqr4T = 1;
-        turn = 0;
-    }
-    else if(sqr7 == " O " && sqr8 == " O " && sqr9T == 0 && turn == 1)
-    {
-        document.tic.sqr9.value = " O ";
-        sqr9T = 1;
-        turn = 0;
-    }
-    else if(sqr8 == " O " && sqr9 == " O " && sqr7T == 0 && turn == 1)
-    {
-        document.tic.sqr7.value = " O ";
-        sqr7T = 1;
-        turn = 0;
-    }
-    else if(sqr1 == " O " && sqr5 == " O " && sqr9T == 0 && turn == 1)
-    {
-        document.tic.sqr9.value = " O ";
-        sqr9T = 1;
-        turn = 0;
-    }
-    else if(sqr5 == " O " && sqr9 == " O " && sqr1T == 0 && turn == 1)
-    {
-        document.tic.sqr1.value = " O ";
-        sqr1T = 1;
-        turn = 0;
-    }
-    else if(sqr3 == " O " && sqr5 == " O " && sqr7T == 0 && turn == 1)
-    {
-        document.tic.sqr7.value = " O ";
-        sqr7T = 1;
-        turn = 0;
-    }
-    else if(sqr7 == " O " && sqr5 == " O " && sqr3T == 0 && turn == 1)
-    {
-        document.tic.sqr3.value = " O ";
-        sqr3T = 1;
-        turn = 0;
-    }
-    else if(sqr1 == " O " && sqr3 == " O " && sqr2T == 0 && turn == 1)
-    {
-        document.tic.sqr2.value = " O ";
-        sqr2T = 1;
-        turn = 0;
-    }
-    else if(sqr4 == " O " && sqr6 == " O " && sqr5T == 0 && turn == 1)
-    {
-        document.tic.sqr5.value = " O ";
-        sqr5T = 1;
-        turn = 0;
-    }
-    else if(sqr7 == " O " && sqr9 == " O " && sqr8T == 0 && turn == 1)
-    {
-        document.tic.sqr8.value = " O ";
-        sqr8T = 1;
-        turn = 0;
-    }
-    else if(sqr1 == " O " && sqr7 == " O " && sqr4T == 0 && turn == 1)
-    {
-        document.tic.sqr4.value = " O ";
-        sqr4T = 1;
-        turn = 0;
-    }
-    else if(sqr2 == " O " && sqr8 == " O " && sqr5T == 0 && turn == 1)
-    {
-        document.tic.sqr5.value = " O ";
-        sqr5T = 1;
-        turn = 0;
-    }
-    else if(sqr3 == " O " && sqr9 == " O " && sqr6T == 0 && turn == 1)
-    {
-        document.tic.sqr6.value = " O ";
-        sqr6T = 1;
-        turn = 0;
-    }
-    else if(sqr1 == " O " && sqr5 == " O " && sqr9T == 0 && turn == 1)
-    {
-        document.tic.sqr9.value = " O ";
-        sqr9T = 1;
-        turn = 0;
-    }
-    else if(sqr4 == " O " && sqr7 == " O " && sqr1T == 0 && turn == 1)
-    {
-        document.tic.sqr1.value = " O ";
-        sqr1T = 1;
-        turn = 0;
-    }
-    else if(sqr5 == " O " && sqr8 == " O " && sqr2T == 0 && turn == 1)
-    {
-        document.tic.sqr2.value = " O ";
-        sqr2T = 1;
-        turn = 0;
-    }
-    else if(sqr6 == " O " && sqr9 == " O " && sqr3T == 0 && turn == 1)
-    {
-        document.tic.sqr3.value = " O ";
-        sqr3T = 1;
-        turn = 0;
-    }
-    else if(sqr1 == " O " && sqr4 == " O " && sqr7T == 0 && turn == 1)
-    {
-        document.tic.sqr7.value = " O ";
-        sqr7T = 1;
-        turn = 0;
-    }
-    else if(sqr2 == " O " && sqr5 == " O " && sqr8T == 0 && turn == 1)
-    {
-        document.tic.sqr8.value = " O ";
-        sqr8T = 1;
-        turn = 0;
-    }
-    else if(sqr3 == " O " && sqr6 == " O " && sqr9T == 0 && turn == 1)
-    {
-        document.tic.sqr9.value = " O ";
-        sqr9T = 1;
-        turn = 0;
-    }
-    else if(sqr1 == " O " && sqr9 == " O " && sqr5T == 0 && turn == 1)
-    {
-        document.tic.sqr5.value = " O ";
-        sqr5T = 1;
-        turn = 0;
-    }
-    else if(sqr3 == " O " && sqr7 == " O " && sqr5T == 0 && turn == 1)
-    {
-        document.tic.sqr5.value = " O ";
-        sqr5T = 1;
-        turn = 0;
-    }
-    else
-    {
-        computer();
-    }
-    check2();
-}
-function computer()
-{
-    check2();
-    if(sqr1 == " X " && sqr2 == " X " && sqr3T == 0 && turn == 1)
-    {
-        document.tic.sqr3.value = " O ";
-        sqr3T = 1;
-        turn = 0;
-    }
-    else if(sqr2 == " X " && sqr3 == " X " && sqr1T == 0 && turn == 1)
-    {
-        document.tic.sqr1.value = " O ";
-        sqr1T = 1;
-        turn = 0;
-    }
-    else if(sqr4 == " X " && sqr5 == " X " && sqr6T == 0 && turn == 1)
-    {
-        document.tic.sqr6.value = " O ";
-        sqr6T = 1;
-        turn = 0;
-    }
-    else if(sqr5 == " X " && sqr6 == " X " && sqr4T == 0 && turn == 1)
-    {
-        document.tic.sqr4.value = " O ";
-        sqr4T = 1;
-        turn = 0;
-    }
-    else if(sqr7 == " X " && sqr8 == " X " && sqr9T == 0 && turn == 1)
-    {
-        document.tic.sqr9.value = " O ";
-        sqr9T = 1;
-        turn = 0;
-    }
-    else if(sqr8 == " X " && sqr9 == " X " && sqr7T == 0 && turn == 1)
-    {
-        document.tic.sqr7.value = " O ";
-        sqr7T = 1;
-        turn = 0;
-    }
-    else if(sqr1 == " X " && sqr5 == " X " && sqr9T == 0 && turn == 1)
-    {
-        document.tic.sqr9.value = " O ";
-        sqr9T = 1;
-        turn = 0;
-    }
-    else if(sqr5 == " X " && sqr9 == " X " && sqr1T == 0 && turn == 1)
-    {
-        document.tic.sqr1.value = " O ";
-        sqr1T = 1;
-        turn = 0;
-    }
-    else if(sqr3 == " X " && sqr5 == " X " && sqr7T == 0 && turn == 1)
-    {
-        document.tic.sqr7.value = " O ";
-        sqr7T = 1;
-        turn = 0;
-    }
-    else if(sqr7 == " X " && sqr5 == " X " && sqr3T == 0 && turn == 1)
-    {
-        document.tic.sqr3.value = " O ";
-        sqr3T = 1;
-        turn = 0;
-    }
-    else if(sqr1 == " X " && sqr3 == " X " && sqr2T == 0 && turn == 1)
-    {
-        document.tic.sqr2.value = " O ";
-        sqr2T = 1;
-        turn = 0;
-    }
-    else if(sqr4 == " X " && sqr6 == " X " && sqr5T == 0 && turn == 1)
-    {
-        document.tic.sqr5.value = " O ";
-        sqr5T = 1;
-        turn = 0;
-    }
-    else if(sqr7 == " X " && sqr9 == " X " && sqr8T == 0 && turn == 1)
-    {
-        document.tic.sqr8.value = " O ";
-        sqr8T = 1;
-        turn = 0;
-    }
-    else if(sqr1 == " X " && sqr7 == " X " && sqr4T == 0 && turn == 1)
-    {
-        document.tic.sqr4.value = " O ";
-        sqr4T = 1;
-        turn = 0;
-    }
-    else if(sqr2 == " X " && sqr8 == " X " && sqr5T == 0 && turn == 1)
-    {
-        document.tic.sqr5.value = " O ";
-        sqr5T = 1;
-        turn = 0;
-    }
-    else if(sqr3 == " X " && sqr9 == " X " && sqr6T == 0 && turn == 1)
-    {
-        document.tic.sqr6.value = " O ";
-        sqr6T = 1;
-        turn = 0;
-    }
-    else if(sqr1 == " X " && sqr5 == " X " && sqr9T == 0 && turn == 1)
-    {
-        document.tic.sqr9.value = " O ";
-        sqr9T = 1;
-        turn = 0;
-    }
-    else if(sqr4 == " X " && sqr7 == " X " && sqr1T == 0 && turn == 1)
-    {
-        document.tic.sqr1.value = " O ";
-        sqr1T = 1;
-        turn = 0;
-    }
-    else if(sqr5 == " X " && sqr8 == " X " && sqr2T == 0 && turn == 1)
-    {
-        document.tic.sqr2.value = " O ";
-        sqr2T = 1;
-        turn = 0;
-    }
-    else if(sqr6 == " X " && sqr9 == " X " && sqr3T == 0 && turn == 1)
-    {
-        document.tic.sqr3.value = " O ";
-        sqr3T = 1;
-        turn = 0;
-    }
-    else if(sqr1 == " X " && sqr4 == " X " && sqr7T == 0 && turn == 1)
-    {
-        document.tic.sqr7.value = " O ";
-        sqr7T = 1;
-        turn = 0;
-    }
-    else if(sqr2 == " X " && sqr5 == " X " && sqr8T == 0 && turn == 1)
-    {
-        document.tic.sqr8.value = " O ";
-        sqr8T = 1;
-        turn = 0;
-    }
-    else if(sqr3 == " X " && sqr6 == " X " && sqr9T == 0 && turn == 1)
-    {
-        document.tic.sqr9.value = " O ";
-        sqr9T = 1;
-        turn = 0;
-    }
-    else if(sqr1 == " X " && sqr9 == " X " && sqr5T == 0 && turn == 1)
-    {
-        document.tic.sqr5.value = " O ";
-        sqr5T = 1;
-        turn = 0;
-    }
-    else if(sqr3 == " X " && sqr7 == " X " && sqr5T == 0 && turn == 1)
-    {
-        document.tic.sqr5.value = " O ";
-        sqr5T = 1;
-        turn = 0;
-    }
-    else
-    {
-        AI();
-    }
-    check2()
-}
-function AI()
-{
-    vari();
-    if(document.tic.sqr5.value == "     " && turn == 1)
-    {
-        document.tic.sqr5.value = " O ";
-        turn = 0;
-        sqr5T = 1
-    }
-    else if(document.tic.sqr1.value == "     " && turn == 1)
-    {
-        document.tic.sqr1.value = " O ";
-        turn = 0;
-        sqr1T = 1
-    }
-    else if(document.tic.sqr9.value == "     " && turn == 1)
-    {
-        document.tic.sqr9.value = " O ";
-        turn = 0;
-        sqr9T = 1
-    }
-    else if(document.tic.sqr6.value == "     " && turn == 1)
-    {
-        document.tic.sqr6.value = " O ";
-        turn = 0;
-        sqr6T = 1
-    }
-    else if(document.tic.sqr2.value == "     " && turn == 1)
-    {
-        document.tic.sqr2.value = " O ";
-        turn = 0;
-        sqr2T = 1
-    }
-    else if(document.tic.sqr8.value == "     " && turn == 1)
-    {
-        document.tic.sqr8.value = " O ";
-        turn = 0;
-        sqr8T = 1
-    }
-    else if(document.tic.sqr3.value == "     " && turn == 1)
-    {
-        document.tic.sqr3.value = " O ";
-        turn = 0;
-        sqr3T = 1
-    }
-    else if(document.tic.sqr7.value == "     " && turn == 1)
-    {
-        document.tic.sqr7.value = " O ";
-        turn = 0;
-        sqr7T = 1
-    }
-    else if(document.tic.sqr4.value == "     " && turn == 1)
-    {
-        document.tic.sqr4.value = " O ";
-        turn = 0;
-        sqr4T = 1
-    }
-    check2();
-}
-function reset()
-{
+function reset() {
     document.tic.sqr1.value = "     ";
     document.tic.sqr2.value = "     ";
     document.tic.sqr3.value = "     ";
@@ -1004,5 +559,8 @@ function reset()
     turn = 0;
     moveCount = 0;
 
-    glInGame = false;
+    glInGame = "false";
+
+    localStorage.setItem('glInGame', glInGame);
+    ToClients();
 }
