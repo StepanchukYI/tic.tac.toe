@@ -9,6 +9,7 @@ $sql_query = "SELECT login, password FROM clients WHERE login='" . $login . "'";
 $result_set = mysqli_query($h, $sql_query);
 
 $row = mysqli_fetch_row($result_set);
+
 if ($login != "" && $password != "") {
 
     if ($row[1] == $password) {

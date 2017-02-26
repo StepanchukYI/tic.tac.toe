@@ -153,6 +153,11 @@ function Quit() {
 
     r.open("GET", "msg/auth/quit.php?login=" + glClientName, true);
 
+    glInGame = "false";
+    localStorage.setItem('glInGame', glInGame);
+    localStorage.setItem('glOpponentName', "");
+    localStorage.setItem('key', "");
+
     r.onreadystatechange = function () {
         if (r.readyState == 4) {
             var anss = r.responseText;
@@ -160,11 +165,10 @@ function Quit() {
             //console.log(r.responseText);
         }
     };
-    glInGame = "false";
-    localStorage.setItem('glInGame', glInGame);
     r.send(null);
 }
 function Quit_Valid(anss) {
+
     if (anss == "Logout") {
 
         document.location.href = 'index.html';
@@ -391,16 +395,19 @@ function WaitTurn(sqrId){
     console.log(glInGame + " " + glTurn + " " + glFaction + " " + glOpponentName + " " + glClientName);
 }
 
-function close() {
-    glClientName = localStorage.getItem("key");
-    glInGame = localStorage.getItem("glInGame");
+function Mail(email) {
 
-    if (glInGame == "false") {
-        console.log(glClientName);
-        alert("11");
-        Quit(glClientName);
+    var r = new XMLHttpRequest();
+    r.open("GET", "msg/command/mail.php?email=" + email, true);
+    r.onreadystatechange = function () {
+        if (r.readyState == 4) {
+            var ans = r.responseText;
+            //logs();
+            console.log(ans);
+        }
+    };
+    r.send(null);
 
-    }
 }
 
 ///////////////////////////////////////////////////////////////////////////
