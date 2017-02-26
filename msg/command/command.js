@@ -52,8 +52,9 @@ function Auth_Valid(ans) {
         lbLogin.value = glClientName;
     }
     if (ans == "FailedPass") {
+
         t = document.getElementById("pass_msg");
-        t.innerHTML = "Failed pass";
+        t.innerHTML = "Failed password or login";
     }
     if (ans == "User online") {
 
