@@ -56,9 +56,10 @@
         window.onbeforeunload = function (evt) {
             glInGame = localStorage.getItem("glInGame");
             if (glInGame == "false") {
-                Quit();
+                Quit(glClientName);
             }
         }
+
         window.onload = function (evt) {
             if (localStorage.getItem("key") === undefined || localStorage.getItem('clpass') === undefined) {
                 document.location.href = 'index.html';
@@ -67,8 +68,14 @@
             else {
                 glClientName = localStorage.getItem("key");
                 clpass = localStorage.getItem('clpass');
-                console.log(glClientName);
-                console.log("2")
+                if (ans = "OK") {
+                    console.log("2");
+                }
+                else {
+                    Auth(glClientName, clpass);
+                    console.log("3");
+                }
+                console.log(glClientName + " " + clpass);
 
             }
         }

@@ -43,15 +43,8 @@ function Auth_Valid(ans) {
 
     if (ans == "OK") {
 
-        if (localStorage.getItem('key') == undefined) {
-            localStorage.setItem('key', glClientName);
-        }
-
         document.location.href = 'client.html';
 
-        if (localStorage.getItem('key')) {
-            glClientName = localStorage.getItem('key');
-        }
         lbLogin.value = glClientName;
     }
     if (ans == "FailedPass") {
@@ -61,15 +54,7 @@ function Auth_Valid(ans) {
     }
     if (ans == "User online") {
 
-        if (localStorage.getItem('key') == undefined) {
-            localStorage.setItem('key', glClientName);
-        }
-
         document.location.href = 'client.html';
-
-        if (localStorage.getItem('key')) {
-            localStorage.getItem('key');
-        }
 
         t = document.getElementById("lbLoginL");
         lbLogin.value = glClientName;
@@ -119,24 +104,33 @@ function Reg_Valid(anser){
 }
 
 function GetClients() {
-
     if (localStorage.getItem('key')) {
         glClientName = localStorage.getItem('key');
     }
-
     var m = document.getElementById("lbLoginL");
     m.innerHTML = glClientName;
-
     var r = new XMLHttpRequest();
-
     t = document.getElementById("clients");
+
 
     r.open("GET", "msg/profile/clients.php?login=" + glClientName, true);
 
     r.onreadystatechange = function () {
         if (r.readyState == 4) {
             //console.log(r.responseText);
-            t.innerHTML = r.responseText;
+            if (r.responseText != "") {
+                var json = JSON.parse(r.responseText);
+                console.log(json);
+                var ih = "";
+                for (i = 0; i < json.length; i++) {
+                    ih += "<tr><td>" + json[i] + "</td>" + '<td><input type="button" ' + 'value="Invite" onclick=Invite("' + json[i] + '")></td>';
+                }
+                t.innerHTML = ih;
+            }
+            else {
+                t.innerHTML = "No users found";
+            }
+
             var m = document.getElementById("lbLoginL");
             m.innerHTML = glClientName;
         }
@@ -151,8 +145,8 @@ function ToClients() {
 
 }
 
-function Quit(){
-    localStorage.getItem("Login");
+function Quit(glClientName) {
+    glClientName = localStorage.getItem("key");
     var r = new XMLHttpRequest();
     r.open("GET", "msg/auth/quit.php?login=" + glClientName, true);
 
@@ -168,9 +162,10 @@ function Quit(){
     r.send(null);
 }
 function Quit_Valid(anss) {
+    alert(anss);
     if (anss == "Logout") {
+        document.location.href = 'index.html';
     }
-    document.location.href = 'index.html';
 }
 
 function Receive() {
