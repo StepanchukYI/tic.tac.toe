@@ -398,17 +398,28 @@ function WaitTurn(sqrId){
 function Mail(email) {
 
     var r = new XMLHttpRequest();
-    r.open("GET", "msg/command/mail.php?email=" + email, true);
+    r.open("GET", "msg/command/mail2.php?email=" + email, true);
+        
     r.onreadystatechange = function () {
         if (r.readyState == 4) {
-            var ans = r.responseText;
+            var ase = r.responseText;
+            Mail_valid(ase);
             //logs();
-            console.log(ans);
         }
     };
     r.send(null);
 
 }
+function Mail_valid(ase) {
+    if (ase == "send") {
+        document.location.href = 'index.html';
+    }
+    else {
+        alert("incorrect email")
+    }
+
+}
+
 
 ///////////////////////////////////////////////////////////////////////////
 //женщинам, детям и людям со слабой психикой не стоит смотреть код дальше//
