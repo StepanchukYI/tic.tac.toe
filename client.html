@@ -53,14 +53,38 @@
         setInterval(GetClients, 3000);
         setInterval(Receive, 1000);
 
-        window.onbeforeunload = function (evt) {
+        window.onbeforeunload = func;
+
+        function func() {
             glInGame = localStorage.getItem("glInGame");
             if (glInGame == "false") {
-                Quit(glClientName);
+                document.location.href = 'index.html';
+                Quit();
+                return null;
             }
         }
 
-        window.onload = function (evt) {
+        /*window.onbeforeunload = closing();
+         function closing() {
+         if (glInGame == "false") {
+         Quit();
+         return null;
+         }
+         return null;
+         alert("3");
+         }
+
+         /*(window).on('beforeunload', function() {
+         glInGame = localStorage.getItem("glInGame");
+         alert("2");
+         if (glInGame == "false") {
+         alert("1");
+         return Quit();
+         }
+         return 0;
+
+         });
+         /*window.onload = function (evt) {
             if (localStorage.getItem("key") === undefined || localStorage.getItem('clpass') === undefined) {
                 document.location.href = 'index.html';
                 console.log("1");
@@ -68,17 +92,17 @@
             else {
                 glClientName = localStorage.getItem("key");
                 clpass = localStorage.getItem('clpass');
-                if (ans = "OK") {
+         if(ans = "OK"){
                     console.log("2");
                 }
-                else {
-                    Auth(glClientName, clpass);
+         else{
+         Auth(glClientName,clpass);
                     console.log("3");
                 }
-                console.log(glClientName + " " + clpass);
+         console.log(glClientName+" "+clpass);
 
             }
-        }
+         }*/
 
     </script>
 </head>

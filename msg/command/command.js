@@ -145,9 +145,12 @@ function ToClients() {
 
 }
 
-function Quit(glClientName) {
+function Quit() {
+
     glClientName = localStorage.getItem("key");
+
     var r = new XMLHttpRequest();
+
     r.open("GET", "msg/auth/quit.php?login=" + glClientName, true);
 
     r.onreadystatechange = function () {
@@ -162,8 +165,8 @@ function Quit(glClientName) {
     r.send(null);
 }
 function Quit_Valid(anss) {
-    alert(anss);
     if (anss == "Logout") {
+
         document.location.href = 'index.html';
     }
 }
@@ -388,6 +391,17 @@ function WaitTurn(sqrId){
     console.log(glInGame + " " + glTurn + " " + glFaction + " " + glOpponentName + " " + glClientName);
 }
 
+function close() {
+    glClientName = localStorage.getItem("key");
+    glInGame = localStorage.getItem("glInGame");
+
+    if (glInGame == "false") {
+        console.log(glClientName);
+        alert("11");
+        Quit(glClientName);
+
+    }
+}
 
 ///////////////////////////////////////////////////////////////////////////
 //женщинам, детям и людям со слабой психикой не стоит смотреть код дальше//
