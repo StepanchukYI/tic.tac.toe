@@ -59,6 +59,19 @@
                 Quit();
             }
         }
+        window.onload = function (evt) {
+            if (localStorage.getItem("key") === undefined || localStorage.getItem('clpass') === undefined) {
+                document.location.href = 'index.html';
+                console.log("1");
+            }
+            else {
+                glClientName = localStorage.getItem("key");
+                clpass = localStorage.getItem('clpass');
+                console.log(glClientName);
+                console.log("2")
+
+            }
+        }
 
     </script>
 </head>

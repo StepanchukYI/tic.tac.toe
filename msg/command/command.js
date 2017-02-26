@@ -4,6 +4,7 @@ var glOpponentName;
 var glTurn;
 var glInGame;
 var glFaction;
+var clpass;
 
 /*function logs() {
     var dateString = "";
@@ -21,8 +22,10 @@ var glFaction;
 }*/
 function Auth(login, password){
 
+    clpass = password;
     glClientName = login;
     localStorage.setItem('key', glClientName);
+    localStorage.setItem('clpass', clpass);
     var r = new XMLHttpRequest();
     r.open("GET", "msg/auth/auth.php?login=" + login + "&password=" + password , true);
     r.onreadystatechange = function () {
@@ -77,26 +80,20 @@ function Auth_Valid(ans) {
 
 function Reg(login, email, password1, password2) {
 
-    if(password1 == password2)
-    {
         var r = new XMLHttpRequest();
-        r.open("GET", "msg/reg/reg.php?login=" + login + "&password=" + password1 + "&email=" + email, true);
+    r.open("GET", "msg/reg/reg.php?login=" + login + "&password1=" + password1 + "&password2=" + password2 + "&email=" + email, true);
+
         r.onreadystatechange = function () {
             if (r.readyState == 4) {
             //document.getElementById("result").innerHTML += r.responseText;
             //console.log(r.responseText);
-
             var anser = r.responseText;
             Reg_Valid(anser);
+                console.log(anser);
             }
         };
 
         r.send(null);
-    }
-    else{
-        t = document.getElementById("msg_password");
-        t.innerHTML="Wrong password!";
-    }
 }
 function Reg_Valid(anser){
 
@@ -107,15 +104,18 @@ function Reg_Valid(anser){
 
     if(anser == "Login already using")
     {
-        t = document.getElementById("msg_login");
-        t.innerHTML="Login already using!";
+        t = document.getElementById("msg_regist");
+        t.innerHTML = anser;
     }
     if(anser == "Email already using")
     {
-        t = document.getElementById("msg_email");
-        t.innerHTML="Email already using!";
+        t = document.getElementById("msg_regist");
+        t.innerHTML = anser;
     }
-
+    if (anser == "Passwords are different") {
+        t = document.getElementById("msg_regist");
+        t.innerHTML = anser;
+    }
 }
 
 function GetClients() {

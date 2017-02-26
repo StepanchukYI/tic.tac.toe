@@ -52,6 +52,12 @@
             border: 2px solid black;
         }
 
+        #link_register {
+            font-size: 18px;
+            top: 26%;
+            left: 45%;
+            position: absolute;
+        }
     </style>
     <script type="text/javascript" src="msg/command/command.js"></script>
 </head>
@@ -65,7 +71,8 @@
             <div id="lbPassSend">Письмо с инструкциями по восстановлению пароля будет выслано на этот адрес.</div>
             <input type="email" id="txt_email" class="put2" placeholder="E-mail" name="email"/><br/>
             <div id="msg_email"></div>
-            <input type="button" id="btn_recover" value="Отправить E-mail" onclick="Auth(txt_email.value)"/>
+            <input type="button" id="btn_recover" value="Отправить E-mail" onclick="forgot_pass(txt_email.value)"/>
+            <div id="link_register"><a id="link" href="index.html">Войдите</a></div>
         </form>
     </div>
 </section>
