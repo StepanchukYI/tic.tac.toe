@@ -11,34 +11,38 @@ $sql_query = "SELECT login FROM clients WHERE login='" . $login . "'";
 $result_set = mysqli_query($h, $sql_query);
 
 $row = mysqli_fetch_row($result_set);
+if ($login != "") {
+    if ($email != "") {
+        if ($password1 == $password2) {
+            if ($row[0] != $login) {
 
-if ($password1 == $password2) {
+                $sql_query = "SELECT email FROM clients WHERE email='" . $email . "'";
 
-    if ($row[0] != $login && $login != "") {
+                $result_set = mysqli_query($h, $sql_query);
 
-        $sql_query = "SELECT email FROM clients WHERE email='" . $email . "'";
+                $row = mysqli_fetch_row($result_set);
 
-        $result_set = mysqli_query($h, $sql_query);
+                if ($row[0] != $email) {
 
-        $row = mysqli_fetch_row($result_set);
+                    $sql_query = "INSERT INTO clients(login,password,email) VALUES('$login', '$password1', '$email')";
 
-        if ($row[0] != $email && $email != "") {
+                    mysqli_query($h, $sql_query);
 
-            $sql_query = "INSERT INTO clients(login,password,email) VALUES('$login', '$password1', '$email')";
-
-            mysqli_query($h, $sql_query);
-
-            echo "User created";
+                    echo "User created";
+                } else {
+                    echo "Email already using";
+                }
+            } else {
+                echo "Login already using";
+            }
         } else {
-
-            echo "Email already using";
+            echo "Passwords are different";
         }
     } else {
-
-        echo "Login already using";
+        echo "Incorrect email";
     }
 } else {
-    echo "Passwords are different";
+    echo "Incorrect login";
 }
 
 

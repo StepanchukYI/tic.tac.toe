@@ -27,7 +27,7 @@ function Auth(login, password){
     localStorage.setItem('key', glClientName);
     localStorage.setItem('clpass', clpass);
     var r = new XMLHttpRequest();
-    r.open("GET", "msg/auth/auth.php?login=" + login + "&password=" + password , true);
+    r.open("GET", "msg/auth/auth.php?login=" + login + "&password=" + password + "&from=xo", true);
     r.onreadystatechange = function () {
         if (r.readyState == 4) {
             var ans = r.responseText;
@@ -40,29 +40,24 @@ function Auth(login, password){
     r.send(null);
 }
 function Auth_Valid(ans) {
-
-    if (ans == "OK") {
-
-        document.location.href = 'client.html';
-
-        lbLogin.value = glClientName;
+    console.log(ans);
+    t = document.getElementById("pass_msg");
+    switch (ans) {
+        case "OK":
+            document.location.href = 'client.html';
+            lbLogin.value = glClientName;
+            break;
+        case "User already online":
+            t.innerHTML = ans;
+            break;
+        case "Failed password":
+            t.innerHTML = ans;
+            break;
+        case "Failed login":
+            t.innerHTML = ans;
+            break;
     }
-    if (ans == "FailedPass") {
-
-        t = document.getElementById("pass_msg");
-        t.innerHTML = "Failed password or login";
-    }
-    if (ans == "User online") {
-
-        document.location.href = 'client.html';
-
-        t = document.getElementById("lbLoginL");
-        lbLogin.value = glClientName;
-
-    }
-
 }
-
 function Reg(login, email, password1, password2) {
 
         var r = new XMLHttpRequest();
@@ -82,24 +77,26 @@ function Reg(login, email, password1, password2) {
 }
 function Reg_Valid(anser){
 
-    if(anser == "User created")
-    {
-        document.location.href = 'index.html';
-    }
-
-    if(anser == "Login already using")
-    {
-        t = document.getElementById("msg_regist");
-        t.innerHTML = anser;
-    }
-    if(anser == "Email already using")
-    {
-        t = document.getElementById("msg_regist");
-        t.innerHTML = anser;
-    }
-    if (anser == "Passwords are different") {
-        t = document.getElementById("msg_regist");
-        t.innerHTML = anser;
+    t = document.getElementById("msg_regist");
+    switch (anser) {
+        case "User created":
+            document.location.href = 'index.html';
+            break;
+        case "Email already using":
+            t.innerHTML = anser;
+            break;
+        case "Login already using":
+            t.innerHTML = anser;
+            break;
+        case "Passwords are different":
+            t.innerHTML = anser;
+            break;
+        case "Incorrect email":
+            t.innerHTML = anser;
+            break;
+        case "Incorrect login":
+            t.innerHTML = anser;
+            break;
     }
 }
 
@@ -119,6 +116,7 @@ function GetClients() {
         if (r.readyState == 4) {
             //console.log(r.responseText);
             if (r.responseText != "") {
+                console.log(r.responseText);
                 var json = JSON.parse(r.responseText);
                 console.log(json);
                 var ih = "";
@@ -151,7 +149,7 @@ function Quit() {
 
     var r = new XMLHttpRequest();
 
-    r.open("GET", "msg/auth/quit.php?login=" + glClientName, true);
+    r.open("GET", "msg/auth/quit.php?login=" + glClientName + "&from=xo", true);
 
     glInGame = "false";
     localStorage.setItem('glInGame', glInGame);
