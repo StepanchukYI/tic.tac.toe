@@ -11,9 +11,9 @@ $sql_query = "SELECT login FROM clients WHERE login='" . $login . "'";
 $result_set = mysqli_query($h, $sql_query);
 
 $row = mysqli_fetch_row($result_set);
-if ($login != "") {
+if ($login != "" && 1 < count($login) && count($login) < 19) {
     if ($email != "") {
-        if ($password1 == $password2) {
+        if ($password1 == $password2 && 6 < count($password1) && count($password1) < 32) {
             if ($row[0] != $login) {
 
                 $sql_query = "SELECT email FROM clients WHERE email='" . $email . "'";

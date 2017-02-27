@@ -3,7 +3,7 @@ include_once ("dbconfig.php");
 
 $receiver = $_REQUEST['receiver'];
 
-$sql_query = "SELECT sender,header,body FROM messages WHERE receiver = '" . $receiver . "'";
+$sql_query = "SELECT sender,header,body FROM messages_xo WHERE receiver = '" . $receiver . "'";
 $result_set = mysqli_query($h, $sql_query);
 
 if(mysqli_num_rows($result_set) > 0)
@@ -13,7 +13,7 @@ if(mysqli_num_rows($result_set) > 0)
         echo json_encode($row);
     }
 
-    $sql_query = "DELETE FROM messages WHERE receiver = '" . $receiver . "'";
+    $sql_query = "DELETE FROM messages_xo WHERE receiver = '" . $receiver . "'";
     mysqli_query($h, $sql_query);
 }
 else
