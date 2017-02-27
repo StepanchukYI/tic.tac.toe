@@ -20,7 +20,3 @@ if (mysqli_num_rows($result_set) > 0) {
 
     }
 }
-//else
-//{
-//    echo "";
-//}
