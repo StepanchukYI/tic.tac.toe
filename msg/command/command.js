@@ -119,6 +119,7 @@ function GetClients() {
                 console.log(r.responseText);
                 var json = JSON.parse(r.responseText);
                 console.log(json);
+
                 var ih = "";
                 for (i = 0; i < json.length; i++) {
                     ih += "<tr><td>" + json[i] + "</td>" + '<td><input type="button" ' + 'value="Invite" onclick=Invite("' + json[i] + '")></td>';
