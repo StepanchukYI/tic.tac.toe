@@ -49,12 +49,21 @@ function Auth_Valid(ans) {
             break;
         case "User already online":
             t.innerHTML = ans;
+            localStorage.setItem('glInGame', glInGame);
+            localStorage.setItem('glOpponentName', "");
+            localStorage.setItem('key', "");
             break;
         case "Failed password":
             t.innerHTML = ans;
+            localStorage.setItem('glInGame', glInGame);
+            localStorage.setItem('glOpponentName', "");
+            localStorage.setItem('key', "");
             break;
         case "Failed login":
             t.innerHTML = ans;
+            localStorage.setItem('glInGame', glInGame);
+            localStorage.setItem('glOpponentName', "");
+            localStorage.setItem('key', "");
             break;
     }
 }
@@ -95,6 +104,9 @@ function Reg_Valid(anser){
             t.innerHTML = anser;
             break;
         case "Incorrect login":
+            t.innerHTML = anser;
+            break;
+        case "Incorrect password":
             t.innerHTML = anser;
             break;
     }
@@ -395,7 +407,8 @@ function WaitTurn(sqrId){
 }
 
 function Mail(email) {
-
+    var btn = document.getElementById('btn_recover');
+    btn.disable = true;
     var r = new XMLHttpRequest();
     r.open("GET", "msg/command/mail2.php?email=" + email, true);
         
@@ -414,7 +427,8 @@ function Mail_valid(ase) {
         document.location.href = 'index.html';
     }
     else {
-        alert("incorrect email")
+        alert("incorrect email");
+        btn.disable = false;
     }
 
 }

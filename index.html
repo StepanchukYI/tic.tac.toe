@@ -65,6 +65,27 @@
     <script type="text/javascript" src="msg/command/command.js"></script>
 </head>
 <body>
+<script>
+    window.fbAsyncInit = function () {
+        FB.init({
+            appId: '1835750763354501',
+            xfbml: true,
+            version: 'v2.8'
+        });
+        FB.AppEvents.logPageView();
+    };
+
+    (function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {
+            return;
+        }
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+</script>
 <section id="cont">
     <div id="form1">
         <form method="post" name="login">
@@ -73,10 +94,11 @@
             <input type="text" id="txt_login" placeholder="Ваше имя" required/><br/>
             <input type="password" id="txt_pass" placeholder="Пароль" required/><br/>
             <div id="pass_msg"></div>
+            <input type="button" id="btn_auth" value="Войти" onclick="Auth(txt_login.value, txt_pass.value)"/>
             <div id="link"><a id="link_reg" href="register.html">Первый раз на сайте?</a> <a id="link_pwd"
                                                                                              href="forgot_pass.html">Забыли
                 пароль?</a></div>
-            <input type="button" id="btn_auth" value="Войти" onclick="Auth(txt_login.value, txt_pass.value)"/>
+
 
         </form>
     </div>

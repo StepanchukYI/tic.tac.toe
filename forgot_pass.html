@@ -59,7 +59,12 @@
             position: absolute;
         }
     </style>
-    <script type="text/javascript" src="msg/command/command.js"></script>
+    <script type="text/javascript" src="msg/command/command.js">
+        if (txt_email.value != "") {
+            btn_recovery.disable = false;
+        }
+
+    </script>
 </head>
 <body>
 <section id="cont">
