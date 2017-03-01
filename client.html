@@ -55,7 +55,7 @@
 
         window.onload = function () {
             if (localStorage.getItem('key') == undefined || localStorage.getItem('key') == "") {
-                document.location.href = 'index.html';
+                document.location.href = 'index.php';
             }
         };
 
@@ -64,7 +64,7 @@
         function func() {
             glInGame = localStorage.getItem("glInGame");
             if (glInGame == "false") {
-                document.location.href = 'index.html';
+                document.location.href = 'index.php';
                 Quit();
                 return null;
             }

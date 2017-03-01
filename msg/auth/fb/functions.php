@@ -1,9 +1,7 @@
 <?php
 function get_token($code)
 {
-
     $ku = curl_init();
-
     $query = "client_id=" . CLIENT_ID . "&redirect_uri=" . urlencode(REDIRECT) .
         "&client_secret=" . SECRET . "&code=" . $code;
 
@@ -34,7 +32,7 @@ function get_data($token)
 {
 
     $ku = curl_init();
-    $query = "fields=id,name,email,gender,first_name,last_name&access_token=" . $token;
+    $query = "fields=id,email,first_name&access_token=" . $token;
 
     curl_setopt($ku, CURLOPT_URL, GET_DATA . "?" . $query);
     curl_setopt($ku, CURLOPT_RETURNTRANSFER, TRUE);
@@ -43,12 +41,10 @@ function get_data($token)
     if (!$result) {
         exit(curl_error($ku));
     }
-    $user = json_decode($result);
 
-
-    return $user;
-
+    return json_decode($result);
 }
+
 
 ?>
 

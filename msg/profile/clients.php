@@ -3,7 +3,7 @@ include_once ("../dbconfig.php");
 
 $clientLogin = $_REQUEST['login'];
 
-$sql_query = "SELECT login FROM clients WHERE login<>'" . $clientName . "' AND xo_online = 'true'";
+$sql_query = "SELECT login FROM clients WHERE login<>'" . $clientLogin . "' AND xo_online = 'true'";
 
 $result_set = mysqli_query($h, $sql_query);
 

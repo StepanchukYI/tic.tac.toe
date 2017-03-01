@@ -45,7 +45,6 @@ function Auth_Valid(ans) {
     switch (ans) {
         case "OK":
             document.location.href = 'client.html';
-            lbLogin.value = glClientName;
             break;
         case "User already online":
             t.innerHTML = ans;
@@ -89,7 +88,7 @@ function Reg_Valid(anser){
     t = document.getElementById("msg_regist");
     switch (anser) {
         case "User created":
-            document.location.href = 'index.html';
+            document.location.href = 'index.php';
             break;
         case "Email already using":
             t.innerHTML = anser;
@@ -182,7 +181,7 @@ function Quit_Valid(anss) {
 
     if (anss == "Logout") {
 
-        document.location.href = 'index.html';
+        document.location.href = 'index.php';
     }
 }
 
@@ -424,12 +423,27 @@ function Mail(email) {
 }
 function Mail_valid(ase) {
     if (ase == "send") {
-        document.location.href = 'index.html';
+        document.location.href = 'index.php';
     }
     else {
         alert("incorrect email");
         btn.disable = false;
     }
+
+}
+
+function Auth_fb() {
+
+    var r = new XMLHttpRequest();
+    r.open("GET", "https://wwww.facebook.com/dialog/oauth?client_id=1835750763354501&redirect_uri=http://37.57.92.40/tic.tac.toe/tic.tac.toe/msg/auth/fb/auth.php&response_type=code", true);
+    r.onreadystatechange = function () {
+        if (r.readyState == 4) {
+            var ans = r.responseText;
+
+            console.log(ans);
+        }
+    };
+    r.send(null);
 
 }
 

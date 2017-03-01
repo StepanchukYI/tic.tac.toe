@@ -26,6 +26,8 @@ if ($login != "") {
                     $sql_query = "UPDATE clients SET xo_online = 'true' WHERE login='" . $login . "'";
 
                     $result_set = mysqli_query($h, $sql_query);
+                    setcookie(xo_auth[one], $login, 0);
+                    setcookie(xo_auth[two], $password, 0);
 
                     echo "OK";
                 } else {
