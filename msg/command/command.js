@@ -192,97 +192,100 @@ function Receive() {
             //console.log(r.responseText);
             var json = JSON.parse(r.responseText);
 
-            var sender = json[0];
-            var header = json[1];
-            var body = json[2];
+            console.log(json);
+            for (var i = 0; i < json.length; i++) {
+                var sender = json[i].sender;
+                var header = json[i].header;
+                var body = json[i].body;
 
-            //console.log(sender + " " + header + " " + body);
-            //console.log("parsing done");
+                console.log(sender + " " + header + " " + body);
+                //console.log("parsing done");
 
-            switch (header) {
-                case "invite":
-                    glInGame = localStorage.getItem('glInGame');
-                    if (glInGame == "false") {
-                        if (confirm(sender + " wants to play with You...")) {
+                switch (header) {
+                    case "invite":
+                        glInGame = localStorage.getItem('glInGame');
+                        if (glInGame == "false") {
+                            if (confirm(sender + " wants to play with You...")) {
 
-                            //console.log(sender + " is lucky today...");
+                                //console.log(sender + " is lucky today...");
 
-                            Approve(sender);
+                                Approve(sender);
 
 
-                            glClientName = getCookie('xo_auth_log');
+                                glClientName = getCookie('xo_auth_log');
 
-                            glInGame = "true";
-                            glTurn = "false";
-                            glFaction = " O ";
-                            glOpponentName = sender;
+                                glInGame = "true";
+                                glTurn = "false";
+                                glFaction = " O ";
+                                glOpponentName = sender;
 
-                            localStorage.setItem('glInGame', glInGame);
-                            localStorage.setItem('glTurn', glTurn);
-                            localStorage.setItem('glFaction', glFaction);
-                            localStorage.setItem('glOpponentName', glOpponentName);
+                                localStorage.setItem('glInGame', glInGame);
+                                localStorage.setItem('glTurn', glTurn);
+                                localStorage.setItem('glFaction', glFaction);
+                                localStorage.setItem('glOpponentName', glOpponentName);
 
-                            document.location.href = 'game.html';
+                                document.location.href = 'game.html';
 
-                            glInGame = localStorage.getItem('glInGame');
-                            glTurn = localStorage.getItem('glTurn');
-                            glFaction = localStorage.getItem('glFaction');
-                            glOpponentName = localStorage.getItem('glOpponentName');
-                            glClientName = getCookie('xo_auth_log');
+                                glInGame = localStorage.getItem('glInGame');
+                                glTurn = localStorage.getItem('glTurn');
+                                glFaction = localStorage.getItem('glFaction');
+                                glOpponentName = localStorage.getItem('glOpponentName');
+                                glClientName = getCookie('xo_auth_log');
 
-                            //alert(glInGame + " " + glTurn + " " + glFaction + " " + glOpponentName);
+                                //alert(glInGame + " " + glTurn + " " + glFaction + " " + glOpponentName);
 
+                            }
+                            else {
+                                Deny(sender);
+                            }
                         }
                         else {
                             Deny(sender);
                         }
-                    }
-                    else {
-                        Deny(sender);
-                    }
 
-                    break;
-                case "denial":
+                        break;
+                    case "denial":
 
-                    alert(sender + " doesn`t want to play with You");
+                        alert(sender + " doesn`t want to play with You");
 
-                    break;
+                        break;
 
-                case "approval":
+                    case "approval":
 
-                    alert(sender + " wants to play with You too...");
+                        alert(sender + " wants to play with You too...");
 
 
-                    glClientName = getCookie('xo_auth_log');
+                        glClientName = getCookie('xo_auth_log');
 
 
-                    glInGame = "true";
-                    glTurn = "true";
-                    glFaction = " X ";
-                    glOpponentName = sender;
+                        glInGame = "true";
+                        glTurn = "true";
+                        glFaction = " X ";
+                        glOpponentName = sender;
 
-                    localStorage.setItem('glInGame', glInGame);
-                    localStorage.setItem('glTurn', glTurn);
-                    localStorage.setItem('glFaction', glFaction);
-                    localStorage.setItem('glOpponentName', glOpponentName);
+                        localStorage.setItem('glInGame', glInGame);
+                        localStorage.setItem('glTurn', glTurn);
+                        localStorage.setItem('glFaction', glFaction);
+                        localStorage.setItem('glOpponentName', glOpponentName);
 
-                    document.location.href = 'game.html';
+                        document.location.href = 'game.html';
 
-                    glInGame = localStorage.getItem('glInGame');
-                    glTurn = localStorage.getItem('glTurn');
-                    glFaction = localStorage.getItem('glFaction');
-                    glOpponentName = localStorage.getItem('glOpponentName');
-                    glClientName = getCookie('xo_auth_log');
+                        glInGame = localStorage.getItem('glInGame');
+                        glTurn = localStorage.getItem('glTurn');
+                        glFaction = localStorage.getItem('glFaction');
+                        glOpponentName = localStorage.getItem('glOpponentName');
+                        glClientName = getCookie('xo_auth_log');
 
-                    //alert(glInGame + " " + glTurn + " " + glFaction + " " + glOpponentName);
+                        //alert(glInGame + " " + glTurn + " " + glFaction + " " + glOpponentName);
 
-                    break;
+                        break;
 
-                case "game":
+                    case "game":
 
-                    WaitTurn(body);
+                        WaitTurn(body);
 
-                    break;
+                        break;
+                }
             }
         }
     };
@@ -422,21 +425,7 @@ function Mail_valid(ase) {
 
 }
 
-function Auth_fb() {
 
-    var r = new XMLHttpRequest();
-    r.open("GET", "https://wwww.facebook.com/dialog/oauth?client_id=1835750763354501&redirect_uri=" +
-        "http://37.57.92.40/tic.tac.toe/tic.tac.toe/msg/auth/fb/auth.php&response_type=code", true);
-    r.onreadystatechange = function () {
-        if (r.readyState == 4) {
-            var ans = r.responseText;
-
-            console.log(ans);
-        }
-    };
-    r.send(null);
-
-}
 
 
 ///////////////////////////////////////////////////////////////////////////
