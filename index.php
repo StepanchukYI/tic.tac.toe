@@ -2,11 +2,9 @@
 require "msg/auth/fb/config.php";
 require "msg/auth/fb/functions.php";
 
-
 $path = URL_AUTH . "?" . "client_id=" . CLIENT_ID . "&redirect_uri=" . urlencode(REDIRECT) . "&response_type=code";
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -79,6 +77,7 @@ $path = URL_AUTH . "?" . "client_id=" . CLIENT_ID . "&redirect_uri=" . urlencode
 
     </style>
     <script type="text/javascript" src="msg/command/command.js"></script>
+
 </head>
 <body>
 <section id="cont">

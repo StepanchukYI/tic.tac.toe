@@ -20,17 +20,23 @@ if ($_GET['code']) {
                 $result_set = mysqli_query($h, $sql_query);
                 echo json_decode($row);
 
-                setcookie(xo_auth[one], $user->first_name, 0);
-                setcookie(xo_auth[two], $user->id, 0);
+                setcookie('xo_auth_log', $user->first_name, time() + 86400, '/');
+                setcookie('xo_auth_pass', $user->id, time() + 86400, '/');
 
                 echo "OK";
+
+                header('Location: ../../../client.html');
             } else {
                 $sql_query = "INSERT INTO clients(login,password,email,fb_id,xo_online) VALUES('$user->first_name', '$user->id','$user->email', '$user->id', 'true')";
                 mysqli_query($h, $sql_query);
                 echo "OK";
+
+                header('Location: ../../../client.html');
             }
         } else {
             echo "User online";
+
+            header('Location: ../../../client.html');
         }
         /*
         if($row[2]!="true"){

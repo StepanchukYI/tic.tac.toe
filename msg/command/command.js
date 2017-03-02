@@ -22,10 +22,6 @@ var clpass;
 }*/
 function Auth(login, password){
 
-    clpass = password;
-    glClientName = login;
-    localStorage.setItem('key', glClientName);
-    localStorage.setItem('clpass', clpass);
     var r = new XMLHttpRequest();
     r.open("GET", "msg/auth/auth.php?login=" + login + "&password=" + password + "&from=xo", true);
     r.onreadystatechange = function () {
@@ -40,7 +36,6 @@ function Auth(login, password){
     r.send(null);
 }
 function Auth_Valid(ans) {
-    console.log(ans);
     t = document.getElementById("pass_msg");
     switch (ans) {
         case "OK":
@@ -50,19 +45,16 @@ function Auth_Valid(ans) {
             t.innerHTML = ans;
             localStorage.setItem('glInGame', glInGame);
             localStorage.setItem('glOpponentName', "");
-            localStorage.setItem('key', "");
             break;
         case "Failed password":
             t.innerHTML = ans;
             localStorage.setItem('glInGame', glInGame);
             localStorage.setItem('glOpponentName', "");
-            localStorage.setItem('key', "");
             break;
         case "Failed login":
             t.innerHTML = ans;
             localStorage.setItem('glInGame', glInGame);
             localStorage.setItem('glOpponentName', "");
-            localStorage.setItem('key', "");
             break;
     }
 }
@@ -111,21 +103,26 @@ function Reg_Valid(anser){
     }
 }
 
+function getCookie(name) {
+    var r = document.cookie.match("(^|;) ?" + name + "=([^;]*)(;|$)");
+    if (r) return r[2];
+    else return "";
+}
+
 function GetClients() {
-    if (localStorage.getItem('key')) {
-        glClientName = localStorage.getItem('key');
-    }
+
+    glClientName = getCookie('xo_auth_log');
+    //console.log(glClientName);
     var m = document.getElementById("lbLoginL");
     m.innerHTML = glClientName;
+
     var r = new XMLHttpRequest();
     t = document.getElementById("clients");
-
 
     r.open("GET", "msg/profile/clients.php?login=" + glClientName, true);
 
     r.onreadystatechange = function () {
         if (r.readyState == 4) {
-            //console.log(r.responseText);
             if (r.responseText != "") {
                 console.log(r.responseText);
                 var json = JSON.parse(r.responseText);
@@ -156,8 +153,6 @@ function ToClients() {
 }
 
 function Quit() {
-
-    glClientName = localStorage.getItem("key");
 
     var r = new XMLHttpRequest();
 
@@ -214,9 +209,8 @@ function Receive() {
 
                             Approve(sender);
 
-                            if (localStorage.getItem('key')) {
-                                glClientName = localStorage.getItem('key');
-                            }
+
+                            glClientName = getCookie('xo_auth_log');
 
                             glInGame = "true";
                             glTurn = "false";
@@ -234,7 +228,7 @@ function Receive() {
                             glTurn = localStorage.getItem('glTurn');
                             glFaction = localStorage.getItem('glFaction');
                             glOpponentName = localStorage.getItem('glOpponentName');
-                            glClientName = localStorage.getItem('key');
+                            glClientName = getCookie('xo_auth_log');
 
                             //alert(glInGame + " " + glTurn + " " + glFaction + " " + glOpponentName);
 
@@ -259,9 +253,7 @@ function Receive() {
                     alert(sender + " wants to play with You too...");
 
 
-                    if (localStorage.getItem('key')) {
-                        glClientName = localStorage.getItem('key');
-                    }
+                    glClientName = getCookie('xo_auth_log');
 
 
                     glInGame = "true";
@@ -280,7 +272,7 @@ function Receive() {
                     glTurn = localStorage.getItem('glTurn');
                     glFaction = localStorage.getItem('glFaction');
                     glOpponentName = localStorage.getItem('glOpponentName');
-                    glClientName = localStorage.getItem('key');
+                    glClientName = getCookie('xo_auth_log');
 
                     //alert(glInGame + " " + glTurn + " " + glFaction + " " + glOpponentName);
 
@@ -343,7 +335,7 @@ function MakeTurn(sqrId) {
     glTurn = localStorage.getItem('glTurn');
     glFaction = localStorage.getItem('glFaction');
     glOpponentName = localStorage.getItem('glOpponentName');
-    glClientName = localStorage.getItem('key');
+    glClientName = getCookie('xo_auth_log');
 
     if (glInGame == "true" && glTurn == "true") {
         var sqr = document.getElementById(sqrId);
@@ -359,7 +351,7 @@ function MakeTurn(sqrId) {
             localStorage.setItem('glTurn', glTurn);
             localStorage.setItem('glFaction', glFaction);
             localStorage.setItem('glOpponentName', glOpponentName);
-            localStorage.setItem('key', glClientName);
+
 
             var r = new XMLHttpRequest();
             r.open("GET", "msg/send.php?sender=" + glClientName + "&receiver=" + glOpponentName + "&header=game" + "&body=" + sqrId, true);
@@ -379,10 +371,9 @@ function MakeTurn(sqrId) {
 function WaitTurn(sqrId){
 
     glInGame = localStorage.getItem('glInGame');
-    glTurn = localStorage.getItem('glTurn');
     glFaction = localStorage.getItem('glFaction');
     glOpponentName = localStorage.getItem('glOpponentName');
-    glClientName = localStorage.getItem('key');
+    glClientName = getCookie('xo_auth_log');
 
     var sqr = document.getElementById(sqrId);
 
@@ -399,7 +390,6 @@ function WaitTurn(sqrId){
     localStorage.setItem('glTurn', glTurn);
     localStorage.setItem('glFaction', glFaction);
     localStorage.setItem('glOpponentName', glOpponentName);
-    localStorage.setItem('key', glClientName);
 
 
     console.log(glInGame + " " + glTurn + " " + glFaction + " " + glOpponentName + " " + glClientName);
@@ -435,7 +425,8 @@ function Mail_valid(ase) {
 function Auth_fb() {
 
     var r = new XMLHttpRequest();
-    r.open("GET", "https://wwww.facebook.com/dialog/oauth?client_id=1835750763354501&redirect_uri=http://37.57.92.40/tic.tac.toe/tic.tac.toe/msg/auth/fb/auth.php&response_type=code", true);
+    r.open("GET", "https://wwww.facebook.com/dialog/oauth?client_id=1835750763354501&redirect_uri=" +
+        "http://37.57.92.40/tic.tac.toe/tic.tac.toe/msg/auth/fb/auth.php&response_type=code", true);
     r.onreadystatechange = function () {
         if (r.readyState == 4) {
             var ans = r.responseText;

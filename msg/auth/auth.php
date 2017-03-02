@@ -26,8 +26,9 @@ if ($login != "") {
                     $sql_query = "UPDATE clients SET xo_online = 'true' WHERE login='" . $login . "'";
 
                     $result_set = mysqli_query($h, $sql_query);
-                    setcookie(xo_auth[one], $login, 0);
-                    setcookie(xo_auth[two], $password, 0);
+                    setcookie('xo_auth_log', $login, time() + 86400, '/');
+                    setcookie('xo_auth_pass', $password, time() + 86400, '/');
+
 
                     echo "OK";
                 } else {
@@ -39,6 +40,8 @@ if ($login != "") {
                     $sql_query = "UPDATE clients SET chat_online = 'true' WHERE login='" . $login . "'";
 
                     $result_set = mysqli_query($h, $sql_query);
+                    setcookie('xo_auth_log', 'root', time() + 86400, '/');
+                    setcookie('xo_auth_pass', $password, time() + 86400, '/');
 
                     echo "OK";
                 } else {

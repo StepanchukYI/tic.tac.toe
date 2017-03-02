@@ -52,24 +52,6 @@
     <script>
         setInterval(GetClients, 3000);
         setInterval(Receive, 1000);
-
-        window.onload = function () {
-            if (localStorage.getItem('key') == undefined || localStorage.getItem('key') == "") {
-                document.location.href = 'index.php';
-            }
-        };
-
-        window.onbeforeunload = func;
-
-        function func() {
-            glInGame = localStorage.getItem("glInGame");
-            if (glInGame == "false") {
-                document.location.href = 'index.php';
-                Quit();
-                return null;
-            }
-        }
-
     </script>
 </head>
 <body>
